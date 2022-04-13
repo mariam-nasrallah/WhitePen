@@ -1,0 +1,183 @@
+{
+  "name": "whitepen-scanner",
+  "displayName": "WhitePen Scanner",
+  "description": "A Scanner for code flaws, and third parties vulnerabilities checker",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "whitepen",
+          "title": "WhitePen",
+          "icon": "media/images/whitepen_icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "whitepen": [
+        {
+          "id": "whitepen.views.welcome",
+          "name": "WhitePen",
+          "when": "!whitepen:loggedIn"
+        },
+        {
+          "id": "whitepen.views.loggedIn",
+          "name": "WhitePen",
+          "when": "whitepen:loggedIn"
+        },
+        {
+          "id": "whitepen.views.packageChecker",
+          "name": "WhitePen Package Checker",
+          "when": "whitepen:loggedIn && whitepen:packageCVE"
+        },
+        {
+          "id": "whitepen.views.cveWebView",
+          "name": "CVE",
+          "when": "whitepen:loggedIn && whitepen:packageCVE && whitepen:cves"
+        }
+      ]      
+    },
+    "viewsWelcome": [
+      {
+        "view": "whitepen.views.welcome",
+        "contents": "Welcome to WhitePen. 👋\nLet's start by connecting VS Code with WhitePen:\n[Connect VS Code with WhitePen](command:whitepen.login 'Connect with WhitePen')\n",
+        "when": "!whitepen:loggedIn"
+      },
+      {
+        "view": "whitepen.views.loggedIn",
+        "contents": "Welcome to Logged",
+        "when": "whitepen:loggedIn"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "whitepen.start",
+          "when": "view == 'snyk.views.analysis.code.security' || view == 'snyk.views.analysis.code.quality' || view == 'snyk.views.analysis.oss'",
+          "group": "navigation"
+        },
+        {
+          "command": "whitepen.settings",
+          "when": "view == 'snyk.views.analysis.code.security' || view == 'snyk.views.analysis.code.quality' || view == 'snyk.views.analysis.oss' || view == 'snyk.views.welcome' || view == 'snyk.views.actions'",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "whitepen.login",
+          "when": "!whitepen:loggedIn"
+        },
+        {
+          "command": "whitepen.set.token",
+          "when": "!whitepen:loggedIn"
+        },
+        {
+          "command": "whitepen.start",
+          "when": "whitepen:loggedIn"
+        },
+        {
+          "command": "whitepen.scan.dep",
+          "when": "whitepen:loggedIn"
+        },
+        {
+          "command": "whitepen.scan.code",
+          "when": "whitepen:loggedIn"
+        },
+        {
+          "command": "whitepen.logout",
+          "when": "whitepen:loggedIn"
+        },
+        {
+          "command": "whitepen.cves",
+          "when": "whitepen:cves"
+        },
+        {
+          "command": "whitepen.settings"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "whitepen.start",
+        "title": "Start WhitePen Scanner",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.login",
+        "title": "Login To WhitePen",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.logout",
+        "title": "Logout From WhitePen",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.scan.dep",
+        "title": "Start WhitePen Dependencies Scanner",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.scan.code",
+        "title": "Start WhitePen Code Scanner",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.set.token",
+        "title": "Set WhitePen Auth Token",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.settings",
+        "title": "WhitePen Settings",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.cves",
+        "title": "WhitePen CVES",
+        "category": "WhitePen"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.0",
+    "@types/node": "14.x",
+    "@types/vscode": "^1.66.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "@vscode/test-electron": "^2.1.2",
+    "esbuild": "^0.14.36",
+    "eslint": "^8.9.0",
+    "glob": "^7.2.0",
+    "mocha": "^9.2.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}
