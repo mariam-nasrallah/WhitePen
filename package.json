@@ -36,16 +36,16 @@
           "when": "whitepen:loggedIn"
         },
         {
-          "id": "whitepen.views.packageChecker",
-          "name": "WhitePen Package Checker",
-          "when": "whitepen:loggedIn && whitepen:packageCVE"
+          "id": "whitepen.views.vuln",
+          "name": "VULN",
+          "when": "whitepen:loggedIn &&  whitepen:vuln"
         },
         {
-          "id": "whitepen.views.cveWebView",
+          "id": "whitepen.views.cves",
           "name": "CVE",
-          "when": "whitepen:loggedIn && whitepen:packageCVE && whitepen:cves"
+          "when": "whitepen:loggedIn && whitepen:vuln && whitepen:cves"
         }
-      ]      
+      ]
     },
     "viewsWelcome": [
       {
@@ -98,8 +98,12 @@
           "when": "whitepen:loggedIn"
         },
         {
+          "command": "whitepen.vuln",
+          "when": "whitepen:loggedIn  && whitepen:vuln"
+        },
+        {
           "command": "whitepen.cves",
-          "when": "whitepen:cves"
+          "when": "whitepen:loggedIn  && whitepen:vuln && whitepen:cves"
         },
         {
           "command": "whitepen.settings"
@@ -140,6 +144,11 @@
       {
         "command": "whitepen.settings",
         "title": "WhitePen Settings",
+        "category": "WhitePen"
+      },
+      {
+        "command": "whitepen.vuln",
+        "title": "WhitePen Vuln",
         "category": "WhitePen"
       },
       {

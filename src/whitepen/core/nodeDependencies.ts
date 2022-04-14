@@ -2,15 +2,17 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { setContext } from "../common/vscode/vscodeCommands";
+import { CVE, CveNodeProvider } from './cveDependencies';
 // import { pkgCheckerClient } from './pkgCheckerClient';
 import { resourceLimits } from 'worker_threads';
-import { pkgCheckerClient } from './pkgCheckerClient';
+import { isPackageVuln } from './pkgCheckerClient';
+import { WHITEPEN_CVES } from '../common/constants/commands';
 export class DepNodeProvider implements vscode.TreeDataProvider<Dependency> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined | void> = new vscode.EventEmitter<Dependency | undefined | void>();
 	// readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | void> = this._onDidChangeTreeData.event;
 	private workspaceRoot: string | undefined;
-	constructor(workspaceRoot: string | undefined, cve: string | undefined) {
+	constructor(workspaceRoot: string | undefined) {
 		this.workspaceRoot = workspaceRoot;
 	}
 
@@ -63,15 +65,15 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency> {
 				if (this.pathExists(path.join(workspace, moduleName))) {
 					return new Dependency(moduleName, version, vscode.TreeItemCollapsibleState.Collapsed);
 				} else {
-							const pkgCheck = await pkgCheckerClient(moduleName,version);
+							const pkgCheck = await isPackageVuln(moduleName,version);
 							if(pkgCheck){
 								return new Dependency(moduleName, version, vscode.TreeItemCollapsibleState.None, {
-																command: 'whitepen.cves',
+																command: WHITEPEN_CVES,
 																title: 'CVE: ' + moduleName + '@' + version +'',
-																arguments: [moduleName, version]
+																arguments: [true, moduleName, version]
 														});
 							
-					}
+							}
 					return;
 				}
 			};

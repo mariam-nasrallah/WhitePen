@@ -8,6 +8,7 @@ import {
     WHITEPEN_SCAN_DEP,
     WHITEPEN_SCAN_CODE,
     WHITEPEN_SET_TOKEN,
+    WHITEPEN_VULN,
     WHITEPEN_CVES
 } from './common/constants/commands';
 import WhitePenLogin from './core/login';
@@ -17,6 +18,7 @@ import WhitePenLib from './core/whitepenLib';
 import WhitePenSecretsStore from './core/whitePenSecretsStore';
 import { setContext } from "./common/vscode/vscodeCommands";
 import { DepNodeProvider } from './core/nodeDependencies';
+import { CVE, CveNodeProvider } from './core/cveDependencies';
 
 class WhitePen extends WhitePenLib implements IExtension{    
     private rootPath: string | undefined;
@@ -54,12 +56,12 @@ class WhitePen extends WhitePenLib implements IExtension{
         
             if (this.rootPath === undefined){
                 vscode.window.showInformationMessage("Empty Workspace Directory!");
-                setContext("packageCVE",false);
+                setContext("vuln",false);
             }else{
                 var nodeDependenciesProvider:any ;
-                nodeDependenciesProvider = new DepNodeProvider(this.rootPath, "");
-                vscode.window.registerTreeDataProvider('whitepen.views.packageChecker', nodeDependenciesProvider);
-                setContext("packageCVE",true);
+                nodeDependenciesProvider = new DepNodeProvider(this.rootPath);
+                vscode.window.registerTreeDataProvider('whitepen.views.vuln', nodeDependenciesProvider);
+                setContext("vuln",true);
             }
 
             vscode.commands.executeCommand(WHITEPEN_SCAN_DEP);
@@ -93,24 +95,18 @@ class WhitePen extends WhitePenLib implements IExtension{
             vscode.commands.registerCommand(WHITEPEN_SET_TOKEN, () => {
                 console.log("Set Token");
             }),
-            vscode.commands.registerCommand(WHITEPEN_CVES, async (moduleName:string, version:string)=> {
+            vscode.commands.registerCommand(WHITEPEN_VULN, async (moduleName:string, version:string)=> {
                 var nodeDependenciesProvider:any ;
-                nodeDependenciesProvider = new DepNodeProvider(this.rootPath, moduleName);
-                vscode.window.registerTreeDataProvider('whitepen.views.cveWebView', nodeDependenciesProvider);
-            // const panel = vscode.window.createWebviewPanel(
-            //     'Package Information',
-            //     'Package Information',
-            //     vscode.ViewColumn.One,
-            //     {}
-            //   );
-
-              console.log(moduleName, version);
-        
-              // And set its HTML content
-              
-                // nodeDependenciesProvider = new DepNodeProvider(rootPath);
-                // vscode.window.registerTreeDataProvider('whitepen.views.packageChecker', nodeDependenciesProvider);
+                nodeDependenciesProvider = new DepNodeProvider(this.rootPath);
+                vscode.window.registerTreeDataProvider('whitepen.views.vuln', nodeDependenciesProvider);               
 				setContext("cves", true);
+            }),
+            vscode.commands.registerCommand(WHITEPEN_CVES, async (isVuln: boolean, moduleName:string, version: string)=> {
+                var cveNodeDependenciesProvider:any ;
+                cveNodeDependenciesProvider = new CveNodeProvider(isVuln, moduleName, version);
+                vscode.window.registerTreeDataProvider('whitepen.views.cves', cveNodeDependenciesProvider);             
+				setContext("cves", true);
+				setContext("vuln", true); 
             })
         );
   }
