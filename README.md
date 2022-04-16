@@ -1,70 +1,46 @@
-# whitepen-scanner README
+# Whitepen Scanner
 
-This is the README for your extension "whitepen-scanner". After writing up a brief description, we recommend including the following sections.
+This is the README for Whitepen Scanner. The main concept of this scanner is to detect vulnerabilites in the installed packages.
 
-## Features
+## Registration
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+First step is to make registartion by email on http://theateam.xyz:61040/graphql/ 
 
-For example if there is an image subfolder under your extension project workspace:
+## Login
 
-\!\[feature X\]\(images/feature-x.png\)
+After installing WhitePen extension, you have to login by clicking on "Connect VS Code with WhitePen"  
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![Login](media/images/login.png)
 
-## Requirements
+## Run Package Checker
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+After Logging in, the package checker will run automatically or by clicking ctrl+shift+p and choosing command <span style="color: #008ae6"> WhitePen: Start WhitePen Dependencies Scanner</span>
 
-## Extension Settings
+![Login](media/images/dep_scan.png)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Show Vulnerable Package
 
-For example:
+After running package checker, the vulnerable packages will appear on the left side.
 
-This extension contributes the following settings:
+![Login](media/images/vuln_packages.png)
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
 
-## Known Issues
+## Show CVEs
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+After clicking on one of the vulnerable packages a new tab will appear under it showing the cves contained on the selected package with the colored icon based on the severity of each cve.
 
-## Release Notes
+![Login](media/images/cve_info.png)
 
-Users appreciate release notes as you update your extension.
 
-### 1.0.0
+## Show CVE Information
 
-Initial release of ...
+You can view the information of each cve by clicking on it. A new tab will open on the right side showing its information.
 
-### 1.0.1
+![Login](media/images/cve_details.png)
 
-Fixed issue #.
 
-### 1.1.0
+## Logout
 
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+You can Logout from the extension by executing command ctrl+shift+p <span style="color: #008ae6"> WhitePen: Logout From WhitePen</span>  
+ 
+ ![Login](media/images/logout.png)

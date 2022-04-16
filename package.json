@@ -2,16 +2,19 @@
   "name": "whitepen-scanner",
   "displayName": "WhitePen Scanner",
   "description": "A Scanner for code flaws, and third parties vulnerabilities checker",
+  "publisher": "whitepen-extension",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.66.0"
+  },
+  "repository": {
+    "type": "git"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onWebviewPanel:catCoding",
-    "*"
+    "onWebviewPanel:catCoding"
   ],
   "main": "./dist/extension.js",
   "contributes": {

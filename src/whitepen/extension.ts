@@ -91,7 +91,7 @@ class WhitePen extends WhitePenLib implements IExtension{
                 // console.log("start");
             }),
             vscode.commands.registerCommand(WHITEPEN_SCAN_DEP, () => {
-                console.log("start");
+                vscode.commands.executeCommand(WHITEPEN_VULN);
             }),
             vscode.commands.registerCommand(WHITEPEN_SCAN_CODE, () => {
                 console.log("start");

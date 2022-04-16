@@ -1,5 +1,6 @@
 
 import path = require('path');
+import { stringify } from 'querystring';
 import * as vscode from 'vscode';
 
 function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
@@ -18,7 +19,7 @@ class CVEStruct {
     public fixed:string;
     public title:string;
     public description:string;
-    public severity:string;
+    public severity:number;
     public cweIDs:string;
     public cVSS:string;
     public references:string;
@@ -95,9 +96,26 @@ if (CatCodingPanel.currentPanel) {
 
 		// Set the webview's initial html content
 		this._update();
+		let ico:string = "";
+		switch(this.cve.severity){
+			case 1:
+				ico = 'dark-low-severity.svg';
+				break;
+			case 2:
+				ico = 'dark-medium-severity.svg';
+				break;
+			case 3:
+				ico = 'dark-high-severity.svg';
+				break;
+			case 4:
+				ico = 'dark-critical-severity.svg';
+				break;
+			default: "";
+
+		}
         this._panel.iconPath = {
-			light: vscode.Uri.file(path.join(__filename, '..', '..', 'resources', 'light', 'download.svg')),
-			dark: vscode.Uri.file(path.join(__filename, '..', '..','resources', 'dark', 'download.svg'))
+			light: vscode.Uri.file(path.join(__filename, '..', '..', 'media', 'images', ico)),
+			dark: vscode.Uri.file(path.join(__filename, '..', '..','media', 'images', ico))
 		};
 		// Listen for when the panel is disposed
 		// This happens when the user closes the panel or when the panel is closed programmatically
@@ -203,70 +221,78 @@ if (CatCodingPanel.currentPanel) {
 		// Use a nonce to only allow specific scripts to be run
 		const nonce = getNonce();
         let pkgNameDiv: string|undefined;
-
+		let html = `<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+					<!--
+						Use a content security policy to only allow loading images from https or from our extension directory,
+						and only allow scripts that have a specific nonce.
+					-->
+					<meta
+	  http-equiv="Content-Security-Policy"
+	  content="default-src 'none'; img-src ${webview.cspSource} https:; script-src ${webview.cspSource}; style-src ${webview.cspSource};"
+	/>
+					<link href="${stylesMainUri}" rel="stylesheet">
+					<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+				</head>`;
         if (this.cve.pkgName !== undefined){
             pkgNameDiv = '<h1 id="lines-of-code-counter">Package Name: </h1><h3>'
 			+ this.cve.pkgName +
 			 '</h3>';
         }
 
-    return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-				-->
-				<meta
-  http-equiv="Content-Security-Policy"
-  content="default-src 'none'; img-src ${webview.cspSource} https:; script-src ${webview.cspSource}; style-src ${webview.cspSource};"
-/>
-				<link href="${stylesMainUri}" rel="stylesheet">
-				<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
-			</head>
+    html += `
 			<body>
         <div class="suggestion">
           <section>
-            <div class="severity">
-              <img id="criticald" class="icon dark-only" src=' ${images['dark-critical-severity']}' />
-              <span id="severity-text"></span>
-            </div>
             <div class="suggestion-text"></div>
             <div class="identifiers"></div>
           </section>
-          <section class="delimiter-top summary">
-            <div class="summary-item module">
-              <div class="label font-light">Vulnerable module: ${this.cve.module} @ ${this.cve.version}</div>
-              <div class="content"></div>
-            </div>
-            <div class="summary-item introduced-through">
-              <div class="label font-light">Introduced through</div>
-              <div class="content"></div>
-            </div>
-            <div class="summary-item fixed-in">
-              <div class="label font-light">Fixed in:  ${this.cve.fixed} </div>
-              <div class="content"></div>
-            </div>
-            <div class="summary-item maturity">
-              <div class="label font-light">Exploit maturity</div>
-              <div class="content"></div>
-            </div>
-          </section>
-          <section class="delimiter-top">
-            <h2>Detailed paths</h2>
-            <div class="detailed-paths"></div>
-          </section>
-          <section class="delimiter-top">
-            <div id="overview" class="font-light"></div>
-          </section>
-        </div>
-				<script nonce="${nonce}" src="${scriptUri}"></script>
-			</body>
-			</html>`;
+            
+              <h3>Vulnerable module:  &nbsp; ${this.cve.module} @ ${this.cve.version}</h3>
+			  `;
+
+		if (this.cve.title !== "") {
+			  html +=`<h3> Title: &nbsp;  ${this.cve.title} </h3>
+             `;
+		}
+		if (this.cve.severity === 1){
+			html += `<h3>Severity: &nbsp;  Low </h3>`;
+		}
+		else if (this.cve.severity === 2){
+			html += `<h3>Severity: &nbsp;  Medium </h3>`;
+
+		}
+		else if (this.cve.severity === 3){
+			html += `<h3>Severity: &nbsp;  High </h3>`;
+
+		}
+		else if (this.cve.severity === 4){
+			html += `<h3>Severity: &nbsp;  Critical </h3>`;
+
+		}
+		if (this.cve.fixed !== "") {
+			html +=`<h3>Fixed in: &nbsp;  ${this.cve.fixed} </h3>`;
+		}
+		
+		if(this.cve.publishedDate !== "") {
+			html +=`<h3>Published Date: &nbsp;  ${this.cve.publishedDate} </h3>`;
+		}
+
+		if (this.cve.description !== "") {
+			html +=`<h3>Description: &nbsp;  ${this.cve.description} </h3>`;
+		}	  
+			  
+        if (this.cve.references !== "") {
+			html +=`<h3>References: &nbsp;  ${this.cve.references} </h3>`;
+		}   
+
+          
+ 		return html += `</div></body></html>`;
 	}
 }
 

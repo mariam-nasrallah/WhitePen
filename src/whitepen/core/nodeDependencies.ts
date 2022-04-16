@@ -122,8 +122,8 @@ export class Dependency extends vscode.TreeItem {
 	}
 
 	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'download.svg'),
-		dark: path.join(__filename, '..', '..','resources', 'dark', 'download.svg')
+		light: path.join(__filename, '..', '..', 'resources', 'light', 'warning.svg'),
+		dark: path.join(__filename, '..', '..','resources', 'dark', 'warning.svg')
 	};
 
 	contextValue = 'dependency';
