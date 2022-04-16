@@ -5,6 +5,8 @@ import { setContext } from "../common/vscode/vscodeCommands";
 // import { pkgCheckerClient } from './pkgCheckerClient';
 import { resourceLimits } from 'worker_threads';
 import { getCVES } from './pkgCheckerClient';
+import { WHITEPEN_CVEVIEW } from '../common/constants/commands';
+import { CVEStruct } from './CVEWebView';
 export class CveNodeProvider implements vscode.TreeDataProvider<CVE> {
 
 
@@ -34,26 +36,19 @@ export class CveNodeProvider implements vscode.TreeDataProvider<CVE> {
 		}else{
 			return Promise.resolve([]);
 		}
-		// if (this.module) {
-
-        //       this.cves.forEach( (value: any) => {
-		// 		let cve = Promise.resolve(this.getCVEJson(value));				
-		// 	  });
-		// 	// vscode.window.showInformationMessage('No dependency in empty workspace');
-		// }else{
-
-		// }
+		
 	}
 
 	private async getCVEPackage(): Promise<any> {
-		const toDep = (isVuln: boolean, module: string, version: string): CVE => {
+		const toDep = (isVuln: boolean, cveRes: CVEStruct): CVE => {
 				if (!isVuln) {
-					return new CVE("", version, vscode.TreeItemCollapsibleState.Collapsed);
+					return new CVE("", 0, vscode.TreeItemCollapsibleState.Collapsed);
 				} else {
-					return new CVE(module, version, vscode.TreeItemCollapsibleState.None, {
-						command: 'whitepen.webview',
+					var severity: number = Number(cveRes.severity);
+					return new CVE(cveRes.title, severity, vscode.TreeItemCollapsibleState.None, {
+						command: WHITEPEN_CVEVIEW,
 						title: 'Select CVE',
-						arguments: [module, version]
+						arguments: [this.module,this.version,cveRes]
 					});
 				}
 			};
@@ -62,16 +57,11 @@ export class CveNodeProvider implements vscode.TreeDataProvider<CVE> {
 
 			pkgCheck.forEach(
 				function(cve: any){
-					const res = toDep(true, cve.Title, "");
+					const cveRes = new CVEStruct(cve);
+					const res = toDep(true, cveRes);
 					cves.push(res);
 				}
-			)
-					// console.log(pkgCheck);
-
-
-			// const cves = Object.keys("").map(
-			// 	cve => toDep(true, "batatatata", this.version)
-			// );
+			);
 
 			return cves;
 	}
@@ -84,19 +74,42 @@ export class CVE extends vscode.TreeItem {
 
 	constructor(
 		public title: string,
-		public readonly version: string,
+		public severity: number,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		// public cveID: string,
 		public readonly command?: vscode.Command,
 	) {
 		super(title, collapsibleState);
+		
+		this.severity = severity;
 
-		this.tooltip = `${this.label}-${this.version}`;
+
+		
+
+		this.tooltip = `${this.title}`;
 	}
 
+	private sevIcon(severity:number): string{
+		switch(this.severity){
+			case 1:
+				return "unknown.svg";
+			case 2:
+				return "low.svg";
+			case 3:
+				return "medium.svg";
+			case 4:
+				return "high.svg";
+			case 5:
+				return "critical.svg";
+			default:
+				return "";
+		}
+	}
+
+
 	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'download.svg'),
-		dark: path.join(__filename, '..', '..','resources', 'dark', 'download.svg')
+		light: path.join(__filename, '..', '..', 'resources',  this.sevIcon(this.severity)),
+		dark: path.join(__filename, '..', '..','resources',  this.sevIcon(this.severity))
 	};
 
 	contextValue = 'dependency';

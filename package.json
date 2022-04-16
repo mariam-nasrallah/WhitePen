@@ -10,6 +10,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onWebviewPanel:catCoding",
     "*"
   ],
   "main": "./dist/extension.js",
@@ -32,12 +33,12 @@
         },
         {
           "id": "whitepen.views.loggedIn",
-          "name": "WhitePen",
+          "name": "WhitePen Settings",
           "when": "whitepen:loggedIn"
         },
         {
           "id": "whitepen.views.vuln",
-          "name": "VULN",
+          "name": "Vulnerable Packages",
           "when": "whitepen:loggedIn &&  whitepen:vuln"
         },
         {

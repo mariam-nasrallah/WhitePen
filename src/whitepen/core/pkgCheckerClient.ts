@@ -10,7 +10,10 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
   // AuthSettings.init(context);
   // const settings = AuthSettings.instance;
   //    let resultToken = await checkTokenTime(settings);
-        const parsedVersion = version.substring(1);
+        let parsedVersion = version;
+        if(parsedVersion.charAt(0) === '^'){
+          parsedVersion = version.substring(1);
+        }
        
         var data = JSON.stringify({
             query: `query{
@@ -37,24 +40,19 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
             method: 'post',
             url: 'http://theateam.xyz:61040/graphql/',
             headers: { 
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               'Content-Type': 'application/json',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               'Cookie': 'csrftoken=L0HRVDNKyhomy9Q3JOc4lQ2DMRPkgfhwo6Hqv57pK0fRzz9j86tvuuT0Y7OFryzL'
             },
-            // proxy: {
-            //   host: '192.168.8.111',
-            //   port: 8088,
-            // },
             data : data
           };
           let value = axios(config).then(async function (response: any): Promise<boolean>{ 
             const parseJson = JSON.parse(JSON.stringify(response.data));
             const pkgList = parseJson.data.PackageChecker.PkgCheckList;
             if (pkgList.length !== 0) {
-                // const answer =  await vscode.window.showInformationMessage("Detected Vulnerability at package "+ pkgList[0].PkgName, "Show Information", "Later");
-                // if(answer === "Show Information") {
-                    
-                // }
                 return true;
             }
             return false;
@@ -72,23 +70,11 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
           };
          return resValue();
           
-          
-          // const resValue = async () => {
-          //   const a = await value;
-          //   if(a){
-          //     return true;
-          //   }
-          //   return false;
-          // };
-        //  return resValue();
 
 }
 
 
 export async function getCVES(label: string, version: string): Promise<any>{
-  // AuthSettings.init(context);
-  // const settings = AuthSettings.instance;
-  //    let resultToken = await checkTokenTime(settings);
         const parsedVersion = version.substring(1);
        
         var data = JSON.stringify({
@@ -116,14 +102,13 @@ export async function getCVES(label: string, version: string): Promise<any>{
             method: 'post',
             url: 'http://theateam.xyz:61040/graphql/',
             headers: { 
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               'Content-Type': 'application/json',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               'Cookie': 'csrftoken=L0HRVDNKyhomy9Q3JOc4lQ2DMRPkgfhwo6Hqv57pK0fRzz9j86tvuuT0Y7OFryzL'
             },
-            // proxy: {
-            //   host: '192.168.8.111',
-            //   port: 8088,
-            // },
             data : data
           };
           let value = axios(config).then(async function (response: any): Promise<any>{ 
@@ -131,12 +116,6 @@ export async function getCVES(label: string, version: string): Promise<any>{
             const pkgList = parseJson.data.PackageChecker.PkgCheckList;
             if (pkgList.length !== 0) {
               return pkgList;
-                // const answer =  await vscode.window.showInformationMessage("Detected Vulnerability at package "+ pkgList[0].PkgName, "Show Information", "Later");
-                // if(answer === "Show Information") {
-                    
-                // }
-                // console.log(pkgList);
-                // return true;
             }
             return;
           })
@@ -154,13 +133,4 @@ export async function getCVES(label: string, version: string): Promise<any>{
          return resValue();
           
           
-          // const resValue = async () => {
-          //   const a = await value;
-          //   if(a){
-          //     return true;
-          //   }
-          //   return false;
-          // };
-        //  return resValue();
-
 }

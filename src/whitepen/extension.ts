@@ -9,7 +9,8 @@ import {
     WHITEPEN_SCAN_CODE,
     WHITEPEN_SET_TOKEN,
     WHITEPEN_VULN,
-    WHITEPEN_CVES
+    WHITEPEN_CVES,
+    WHITEPEN_CVEVIEW
 } from './common/constants/commands';
 import WhitePenLogin from './core/login';
 import { IExtension } from './core/interfaces';
@@ -19,6 +20,9 @@ import WhitePenSecretsStore from './core/whitePenSecretsStore';
 import { setContext } from "./common/vscode/vscodeCommands";
 import { DepNodeProvider } from './core/nodeDependencies';
 import { CVE, CveNodeProvider } from './core/cveDependencies';
+import cveViewProvider from './core/cveViewProvider';
+import CVEViewProvider from './core/cveViewProvider';
+import { CatCodingPanel, CVEStruct } from './core/CVEWebView';
 
 class WhitePen extends WhitePenLib implements IExtension{    
     private rootPath: string | undefined;
@@ -107,7 +111,14 @@ class WhitePen extends WhitePenLib implements IExtension{
                 vscode.window.registerTreeDataProvider('whitepen.views.cves', cveNodeDependenciesProvider);             
 				setContext("cves", true);
 				setContext("vuln", true); 
-            })
+				setContext("cveView", true); 
+            }),
+            vscode.commands.registerCommand(WHITEPEN_CVEVIEW, async (module: string,version: string,cveRes: CVEStruct) => {
+                cveRes.module = module;
+                cveRes.version = version;
+			    CatCodingPanel.createOrShow(context.extensionUri, cveRes);
+                console.log(CatCodingPanel.currentPanel);
+            }),
         );
   }
 
@@ -116,6 +127,3 @@ class WhitePen extends WhitePenLib implements IExtension{
 
 export default WhitePen;
 
-function nodeDependenciesProvider(arg0: string, nodeDependenciesProvider: any) {
-    throw new Error('Function not implemented.');
-}

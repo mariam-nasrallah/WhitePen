@@ -94,29 +94,6 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency> {
 			return [];
 		}
 	}
-	// private async sendToClient(deps: Dependency[]){
-	// 	let test = async (): Promise<Dependency[]> =>
-	// 	{ Object.entries(deps).forEach( async entry => {
-	// 		const [key, value] = entry;
-	// 		let result = async (): Promise<Dependency[]> =>{
-	// 			// let  res = await pkgCheckerClient(value.label, value.version);
-	// 		// 	if(res) {
-	// 		// 		entry[1].iconPath = {
-	// 		// 						light: path.join(__filename, '..', '..', 'resources', 'light', 'forbidden.png'),
-	// 		// 						dark: path.join(__filename, '..', '..', 'resources', 'dark', 'forbidden.png')
-	// 		// 					};
-	// 		// }
-	// 		// console.log(deps);
-	// 			return deps;
-	// 		};
-	// 		// console.log(await result());
-	// 		return await result();
-	// 	});
-	// 	return deps;
-	// };
-	// 	return await test();
-
-	// }
 
 	
 	private pathExists(p: string): boolean {
