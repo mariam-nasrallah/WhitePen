@@ -38,7 +38,7 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
           const authToken = WhitePenSecretsStore.instance;
           var config = {
             method: 'post',
-            url: 'http://theateam.xyz:61040/graphql/',
+            url: 'https://theateam.xyz/app1/graphql/',
             headers: { 
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,
@@ -100,7 +100,7 @@ export async function getCVES(label: string, version: string): Promise<any>{
           const authToken = WhitePenSecretsStore.instance;
           var config = {
             method: 'post',
-            url: 'http://theateam.xyz:61040/graphql/',
+            url: 'https://theateam.xyz/app1/graphql/',
             headers: { 
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,

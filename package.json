@@ -14,7 +14,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onWebviewPanel:catCoding"
+    "onWebviewPanel:catCoding",
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
