@@ -4,7 +4,7 @@ This is the README for Whitepen Scanner. The main concept of this scanner is to 
 
 ## Registration
 
-First step is to make registartion by email on http://theateam.xyz:61040/graphql/
+First step is to make registartion by email on https://whitepen.io/registration/
 
 ## Login
 

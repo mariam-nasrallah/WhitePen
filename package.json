@@ -3,7 +3,7 @@
   "displayName": "WhitePen Scanner",
   "description": "A Scanner for code flaws, and third parties vulnerabilities checker",
   "publisher": "whitepen-extension",
-  "homepage": "https://theateam.xyz",
+  "homepage": "https://pkgchecker.whitepen.io/graphql/",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.66.0"

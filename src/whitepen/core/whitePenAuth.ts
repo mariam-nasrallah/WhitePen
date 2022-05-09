@@ -28,7 +28,7 @@ export default class WhitePenAuth {
 
         var config = {
 			method: 'post',
-			url: 'https://theateam.xyz/app1/graphql/',
+			url: 'https://pkgchecker.whitepen.io/o2e2j0mecgu/',
 			headers: { 
 			  'Content-Type': 'application/json', 
 			},
