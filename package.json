@@ -4,7 +4,7 @@
   "description": "A Scanner for code flaws, and third parties vulnerabilities checker",
   "publisher": "whitepen-extension",
   "homepage": "https://pkgchecker.whitepen.io/o2e2j0mecgu/",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.66.0"
   },
