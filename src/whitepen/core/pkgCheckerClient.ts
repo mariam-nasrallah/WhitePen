@@ -6,7 +6,7 @@ import WhitePenSecretsStore from './whitePenSecretsStore';
 // import AuthSettings from "./authProvider";
 const {default : axios} = require('axios');
 
-export async function isPackageVuln(label: string, version: string): Promise<boolean>{
+export async function isPackageVuln(manager:string, label: string, version: string): Promise<boolean>{
   // AuthSettings.init(context);
   // const settings = AuthSettings.instance;
   //    let resultToken = await checkTokenTime(settings);
@@ -17,7 +17,7 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
        
         var data = JSON.stringify({
             query: `query{
-            PackageChecker(manager:"npm", package:"`+label+`", version:"`+parsedVersion+`"){
+            PackageChecker(manager:"`+manager+`", package:"`+label+`", version:"`+parsedVersion+`"){
               PkgCheckList{
                 CVEId
                   PkgName
@@ -38,7 +38,7 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
           const authToken = WhitePenSecretsStore.instance;
           var config = {
             method: 'post',
-            url: 'https://pkgchecker.whitepen.io/o2e2j0mecgu/',
+            url: 'http://localhost:8000/o2e2j0mecgu/',
             headers: { 
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,
@@ -52,6 +52,7 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
           let value = axios(config).then(async function (response: any): Promise<boolean>{ 
             const parseJson = JSON.parse(JSON.stringify(response.data));
             const pkgList = parseJson.data.PackageChecker.PkgCheckList;
+            console.log(pkgList);
             if (pkgList.length !== 0) {
                 return true;
             }
@@ -74,12 +75,17 @@ export async function isPackageVuln(label: string, version: string): Promise<boo
 }
 
 
-export async function getCVES(label: string, version: string): Promise<any>{
-        const parsedVersion = version.substring(1);
+export async function getCVES(manager: string, label: string, version: string): Promise<any>{
+        console.log(version);
+        let parsedVersion = version;
+        console.log(parsedVersion);
+        if(parsedVersion.charAt(0) === '^'){
+          parsedVersion = version.substring(1);
+        }
        
         var data = JSON.stringify({
             query: `query{
-            PackageChecker(manager:"npm", package:"`+label+`", version:"`+parsedVersion+`"){
+            PackageChecker(manager:"`+manager+`", package:"`+label+`", version:"`+parsedVersion+`"){
               PkgCheckList{
                 CVEId
                   PkgName
@@ -100,7 +106,7 @@ export async function getCVES(label: string, version: string): Promise<any>{
           const authToken = WhitePenSecretsStore.instance;
           var config = {
             method: 'post',
-            url: 'https://pkgchecker.whitepen.io/o2e2j0mecgu/',
+            url: 'http://localhost:8000/o2e2j0mecgu/',
             headers: { 
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,

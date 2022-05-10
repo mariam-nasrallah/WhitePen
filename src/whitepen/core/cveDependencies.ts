@@ -13,10 +13,12 @@ export class CveNodeProvider implements vscode.TreeDataProvider<CVE> {
 	private _onDidChangeTreeData: vscode.EventEmitter<CVE | undefined | void> = new vscode.EventEmitter<CVE | undefined | void>();
 	// readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | void> = this._onDidChangeTreeData.event;
 	private isVuln: boolean;
+	private manager: string;
 	private module: string;
 	private version: string;
-	constructor(isVuln: boolean,module: string, version: string) {
+	constructor(isVuln: boolean, manager: string, module: string, version: string) {
 		this.isVuln = isVuln;
+		this.manager = manager;
 		this.module = module;
 		this.version = version;
 	}
@@ -52,9 +54,12 @@ export class CveNodeProvider implements vscode.TreeDataProvider<CVE> {
 					});
 				}
 			};
-			const pkgCheck = await getCVES(this.module,this.version);
+			console.log(this.version);
+			console.log(this.manager);
+			console.log(this.module);
+			const pkgCheck = await getCVES(this.manager, this.module, this.version);
 			let cves: CVE[] =[];
-
+			console.log(pkgCheck);
 			pkgCheck.forEach(
 				function(cve: any){
 					const cveRes = new CVEStruct(cve);

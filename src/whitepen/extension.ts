@@ -1,6 +1,5 @@
 
 import * as vscode from 'vscode';
-import { ExtensionContext, SecretStorage, window } from "vscode";
 import {
     WHITEPEN_START_COMMAND,
     WHITEPEN_LOGIN,
@@ -20,8 +19,6 @@ import WhitePenSecretsStore from './core/whitePenSecretsStore';
 import { setContext } from "./common/vscode/vscodeCommands";
 import { DepNodeProvider } from './core/nodeDependencies';
 import { CVE, CveNodeProvider } from './core/cveDependencies';
-import cveViewProvider from './core/cveViewProvider';
-import CVEViewProvider from './core/cveViewProvider';
 import { CatCodingPanel, CVEStruct } from './core/CVEWebView';
 
 class WhitePen extends WhitePenLib implements IExtension{    
@@ -105,9 +102,11 @@ class WhitePen extends WhitePenLib implements IExtension{
                 vscode.window.registerTreeDataProvider('whitepen.views.vuln', nodeDependenciesProvider);               
 				setContext("cves", true);
             }),
-            vscode.commands.registerCommand(WHITEPEN_CVES, async (isVuln: boolean, moduleName:string, version: string)=> {
+            vscode.commands.registerCommand(WHITEPEN_CVES, async (isVuln: boolean, manager: string, moduleName:string, version: string)=> {
                 var cveNodeDependenciesProvider:any ;
-                cveNodeDependenciesProvider = new CveNodeProvider(isVuln, moduleName, version);
+                console.log(moduleName);
+                console.log(version);
+                cveNodeDependenciesProvider = new CveNodeProvider(isVuln, manager, moduleName, version);
                 vscode.window.registerTreeDataProvider('whitepen.views.cves', cveNodeDependenciesProvider);             
 				setContext("cves", true);
 				setContext("vuln", true); 

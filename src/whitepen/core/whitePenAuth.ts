@@ -28,7 +28,7 @@ export default class WhitePenAuth {
 
         var config = {
 			method: 'post',
-			url: 'https://pkgchecker.whitepen.io/o2e2j0mecgu/',
+			url: 'http://localhost:8000/o2e2j0mecgu/',
 			headers: { 
 			  'Content-Type': 'application/json', 
 			},
