@@ -84,7 +84,7 @@ export async function checkTokenTime(settings: WhitePenSecretsStore){
 	//not valid token but valid refresh token
 	if(token === ''){
 		commands.executeCommand(WHITEPEN_LOGOUT);
-		window.showInformationMessage("You Are Signed Out! Please Login Again");
+		window.showInformationMessage("Please Login!");
 	}
 	if(Number(nowDate) >= Number(tokenDate) && Number(nowDate) < Number(refreshTokenDate)) {
 	  console.log("not valid");
