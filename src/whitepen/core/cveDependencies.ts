@@ -54,12 +54,8 @@ export class CveNodeProvider implements vscode.TreeDataProvider<CVE> {
 					});
 				}
 			};
-			console.log(this.version);
-			console.log(this.manager);
-			console.log(this.module);
 			const pkgCheck = await getCVES(this.manager, this.module, this.version);
 			let cves: CVE[] =[];
-			console.log(pkgCheck);
 			pkgCheck.forEach(
 				function(cve: any){
 					const cveRes = new CVEStruct(cve);

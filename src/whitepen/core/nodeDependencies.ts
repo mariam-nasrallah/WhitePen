@@ -37,6 +37,7 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency> {
 			const packageJsonPath = path.join(this.workspaceRoot, 'package.json');
 			//check req.txt
 			const reqTxtPath = path.join (this.workspaceRoot, 'requirements.txt');
+			// const reqTxtPath = path.join (this.workspaceRoot, 'requirements.txt');
 			//if package.json exists and req.txt not exists
 			if (this.pathExists(packageJsonPath) && !this.pathExists(reqTxtPath)) {
 
@@ -130,10 +131,32 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency> {
 			let deps:  any[] =[];
 			Object.entries(parseReqTxt).forEach( async entry => {
 				 		const [key, value] = entry;
-						 //check if package contains splitter
-						const parseValue = value.split("==");
-						const dep = toDep(parseValue[0], parseValue[1]);
-						deps.push(dep);
+						if(value.includes("==")){
+							const parseValue = value.split("==");
+							const dep = toDep(parseValue[0], parseValue[1]);
+							deps.push(dep);
+						}
+						else if(value.includes("<=")){
+							const parseValue = value.split("<=");
+							const dep = toDep(parseValue[0], parseValue[1]);
+							deps.push(dep);
+						}
+						else if(value.includes("<")){
+							const parseValue = value.split("<");
+							const dep = toDep(parseValue[0], parseValue[1]);
+							deps.push(dep);
+						}
+						else if(value.includes(">=")){
+							const parseValue = value.split(">=");
+							const dep = toDep(parseValue[0], parseValue[1]);
+							deps.push(dep);
+						}
+						else if(value.includes(">")){
+							const parseValue = value.split(">");
+							const dep = toDep(parseValue[0], parseValue[1]);
+							deps.push(dep);
+						}
+						
 				});
 			return deps;
 		}

@@ -2,16 +2,22 @@ import { Console } from 'console';
 import * as vscode from 'vscode';
 import { CVE, CveNodeProvider } from './cveDependencies';
 import { Dependency } from './nodeDependencies';
+import { checkTokenTime } from './whitePenAuth';
 import WhitePenSecretsStore from './whitePenSecretsStore';
 // import AuthSettings from "./authProvider";
 const {default : axios} = require('axios');
 
 export async function isPackageVuln(manager:string, label: string, version: string): Promise<boolean>{
   // AuthSettings.init(context);
-  // const settings = AuthSettings.instance;
-  //    let resultToken = await checkTokenTime(settings);
+     const settings = WhitePenSecretsStore.instance;
+      await checkTokenTime(settings);
         let parsedVersion = version;
-        if(parsedVersion.charAt(0) === '^'){
+        let parsedLabel = label;
+
+        if(parsedLabel.charAt(0) === "@"){
+          parsedLabel = label.substring(1);
+        }
+        if(parsedVersion.charAt(0) === '^' || parsedVersion.charAt(0) === '~'){
           parsedVersion = version.substring(1);
         }
        
@@ -35,13 +41,13 @@ export async function isPackageVuln(manager:string, label: string, version: stri
           }`,
             variables: {}
           });
-          const authToken = WhitePenSecretsStore.instance;
+          const token = await settings.getAuthTokenData();
           var config = {
             method: 'post',
-            url: 'http://localhost:8000/o2e2j0mecgu/',
+            url: 'https://pkgchecker.whitepen.io/o2e2j0mecgu/',
             headers: { 
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,
+              'Authorization': 'Bearer ' + token,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Content-Type': 'application/json',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -52,7 +58,6 @@ export async function isPackageVuln(manager:string, label: string, version: stri
           let value = axios(config).then(async function (response: any): Promise<boolean>{ 
             const parseJson = JSON.parse(JSON.stringify(response.data));
             const pkgList = parseJson.data.PackageChecker.PkgCheckList;
-            console.log(pkgList);
             if (pkgList.length !== 0) {
                 return true;
             }
@@ -62,27 +67,17 @@ export async function isPackageVuln(manager:string, label: string, version: stri
             console.log(error);
           });
           
-          const resValue = async () => {
-            const a = await value;
-            if(a){
-              return true;
-            }
-            return false;
-          };
-         return resValue();
-          
-
-}
+        return Promise.resolve(value);
+  }
 
 
 export async function getCVES(manager: string, label: string, version: string): Promise<any>{
-        console.log(version);
         let parsedVersion = version;
-        console.log(parsedVersion);
-        if(parsedVersion.charAt(0) === '^'){
+        if(parsedVersion.charAt(0) === '^' || parsedVersion.charAt(0) === '~'){
           parsedVersion = version.substring(1);
         }
-       
+        const settings = WhitePenSecretsStore.instance;
+        await checkTokenTime(settings);
         var data = JSON.stringify({
             query: `query{
             PackageChecker(manager:"`+manager+`", package:"`+label+`", version:"`+parsedVersion+`"){
@@ -104,12 +99,13 @@ export async function getCVES(manager: string, label: string, version: string): 
             variables: {}
           });
           const authToken = WhitePenSecretsStore.instance;
+          const token = await authToken.getAuthTokenData();
           var config = {
             method: 'post',
-            url: 'http://localhost:8000/o2e2j0mecgu/',
+            url: 'https://pkgchecker.whitepen.io/o2e2j0mecgu/',
             headers: { 
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              'Authorization': 'Bearer '+ await authToken.getAuthTokenData() ,
+              'Authorization': 'Bearer '+ token,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Content-Type': 'application/json',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -117,6 +113,7 @@ export async function getCVES(manager: string, label: string, version: string): 
             },
             data : data
           };
+          //add verfication 
           let value = axios(config).then(async function (response: any): Promise<any>{ 
             const parseJson = JSON.parse(JSON.stringify(response.data));
             const pkgList = parseJson.data.PackageChecker.PkgCheckList;
@@ -129,14 +126,7 @@ export async function getCVES(manager: string, label: string, version: string): 
             console.log(error);
           });
           
-          const resValue = async () => {
-            const a = await value;
-            if(a){
-              return a;
-            }
-            return ;
-          };
-         return resValue();
+         return Promise.resolve(value);
           
           
 }

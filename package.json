@@ -3,7 +3,7 @@
   "displayName": "WhitePen Scanner",
   "description": "A Scanner for code flaws, and third parties vulnerabilities checker",
   "publisher": "whitepen-extension",
-  "homepage": "http://localhost:8000/o2e2j0mecgu/",
+  "homepage": "https://pkgchecker.whitepen.io/o2e2j0mecgu/",
   "version": "0.4.0",
   "engines": {
     "vscode": "^1.66.0"
@@ -62,7 +62,7 @@
       },
       {
         "view": "whitepen.views.loggedIn",
-        "contents": "Welcome to Logged",
+        "contents": "Welcome to WP Package Checker",
         "when": "whitepen:loggedIn"
       }
     ],

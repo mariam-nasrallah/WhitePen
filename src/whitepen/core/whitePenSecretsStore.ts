@@ -24,7 +24,7 @@ export default class WhitePenSecretsStore {
     }
     
 
-    async storeLoginData(token: string, refreshToken: string, tokenExpDate: string, refreshTokenExpDate: string ): Promise<void> {
+    async storeLoginData(token: string, refreshToken: string, tokenExpDate: string, refreshTokenExpDate: string, isLoggedIn: string ): Promise<void> {
         /*
         Update values in bugout_auth secret storage.
         */
@@ -34,7 +34,7 @@ export default class WhitePenSecretsStore {
         this.secretStorage.store("refresh_token", refreshToken);
         this.secretStorage.store("token_exp_date", tokenExpDate);
         this.secretStorage.store("refresh_token_exp_date", refreshTokenExpDate);
-        this.secretStorage.store("loggedIn", "true");
+        this.secretStorage.store("loggedIn", isLoggedIn);
 
     }
 
@@ -74,7 +74,7 @@ export default class WhitePenSecretsStore {
         await this.secretStorage.delete("refresh_token");
         await this.secretStorage.delete("token_exp_date");
         await this.secretStorage.delete("refresh_token_exp_date");
-        this.secretStorage.store("loggedIn", "false");
+        await this.secretStorage.store("loggedIn", "false");
     }
 
     async setCVE(cve:any): Promise<void>{
